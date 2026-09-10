@@ -88,6 +88,17 @@ Apresentação dos principais dados das ações.
 Neste repositório estão disponíveis os arquivos e documentos relacionados
 ao desenvolvimento do projeto.
 
+O repositório está organizado da seguinte forma:
+
+```text
+AEP-2-SEMESTRE/
+├── README.md
+└── Documentação/
+    ├── AEP 2 SEM.pdf
+    ├── Fluxograma Geral.png
+    └── Fluxograma Detalhado.png
+```
+
 ---
 
 ## AEP 2026.2
