@@ -15,6 +15,60 @@ struct Acao {
 struct Acao acoes[100];
 int total = 0;
 
+/* Le um numero inteiro. Se o usuario nao digitar um numero, devolve -1 */
+int lerNumero(char mensagem[]) {
+    char linha[30];
+    int numero, i, achouEnter = 0, c;
+
+    printf("%s", mensagem);
+    fgets(linha, 30, stdin);
+
+    /* se a linha era maior que o espaco, joga fora o que sobrou */
+    for (i = 0; linha[i] != '\0'; i++) {
+        if (linha[i] == '\n') {
+            achouEnter = 1;
+        }
+    }
+    if (achouEnter == 0) {
+        while ((c = getchar()) != '\n' && c != EOF) {
+        }
+    }
+
+    if (sscanf(linha, "%d", &numero) != 1) {
+        return -1;
+    }
+    return numero;
+}
+
+/* Le um texto (aceita espacos) e nao deixa o campo ficar vazio */
+void lerTexto(char mensagem[], char texto[], int tamanho) {
+    int i, achouEnter, c;
+
+    do {
+        printf("%s", mensagem);
+        fgets(texto, tamanho, stdin);
+
+        /* tira o Enter que o fgets guarda no final */
+        achouEnter = 0;
+        for (i = 0; texto[i] != '\0'; i++) {
+            if (texto[i] == '\n') {
+                texto[i] = '\0';
+                achouEnter = 1;
+            }
+        }
+
+        /* se o texto era maior que o espaco, joga fora o que sobrou */
+        if (achouEnter == 0) {
+            while ((c = getchar()) != '\n' && c != EOF) {
+            }
+        }
+
+        if (texto[0] == '\0') {
+            printf("Digite o valor do campo pedido.\n"); /* Conforme a tabela */
+        }
+    } while (texto[0] == '\0');
+}
+
 /* Procura o codigo no vetor. Devolve a posicao ou -1 se nao achar */
 int buscar(int codigo) {
     int i;
@@ -51,37 +105,31 @@ void cadastrar() {
     int codigo;
 
     if (total == 100) {
-        printf("Memoria cheia!\n");
+        printf("Nao e possivel cadastrar mais acoes nesta execucao.\n"); /* Conforme a tabela */
         return;
     }
 
-    printf("Codigo: ");
-    scanf("%d", &codigo);
-    while (buscar(codigo) != -1) {
-        printf("Erro: codigo ja existe!\n");
-        printf("Codigo: ");
-        scanf("%d", &codigo);
+    codigo = lerNumero("Codigo: ");
+    while (codigo <= 0 || buscar(codigo) != -1) {
+        if (codigo <= 0) {
+            printf("Digite um numero igual ou maior que zero.\n");
+        } else {
+            printf("Informe outro codigo.\n"); /* Conforme a tabela */
+        }
+        codigo = lerNumero("Codigo: ");
     }
     acoes[total].codigo = codigo;
 
-    /* O " %[^\n]" le a linha inteira, inclusive os espacos */
-    printf("Escola: ");
-    scanf(" %[^\n]", acoes[total].escola);
-    printf("Tema: ");
-    scanf(" %[^\n]", acoes[total].tema);
-    printf("Data (dd/mm/aaaa): ");
-    scanf(" %[^\n]", acoes[total].data);
-    printf("Publico-alvo: ");
-    scanf(" %[^\n]", acoes[total].publico);
-    printf("Responsavel: ");
-    scanf(" %[^\n]", acoes[total].responsavel);
+    lerTexto("Escola: ", acoes[total].escola, 50);
+    lerTexto("Tema: ", acoes[total].tema, 50);
+    lerTexto("Data (dd/mm/aaaa): ", acoes[total].data, 15);
+    lerTexto("Publico-alvo: ", acoes[total].publico, 50);
+    lerTexto("Responsavel: ", acoes[total].responsavel, 50);
 
-    printf("Quantidade prevista: ");
-    scanf("%d", &acoes[total].qtdPrevista);
+    acoes[total].qtdPrevista = lerNumero("Quantidade prevista: ");
     while (acoes[total].qtdPrevista <= 0) {
-        printf("Erro: a quantidade deve ser maior que zero!\n");
-        printf("Quantidade prevista: ");
-        scanf("%d", &acoes[total].qtdPrevista);
+        printf("Digite um numero igual ou maior que zero.\n"); /* Conforme a tabela */
+        acoes[total].qtdPrevista = lerNumero("Quantidade prevista: ");
     }
 
     acoes[total].situacao = 1;
@@ -96,6 +144,7 @@ void listar() {
 
     if (total == 0) {
         printf("Nenhuma acao cadastrada.\n");
+        return;
     }
     for (i = 0; i < total; i++) {
         mostrar(i);
@@ -105,12 +154,11 @@ void listar() {
 void pesquisar() {
     int codigo, pos;
 
-    printf("Codigo: ");
-    scanf("%d", &codigo);
+    codigo = lerNumero("Codigo: ");
     pos = buscar(codigo);
 
     if (pos == -1) {
-        printf("Acao nao encontrada!\n");
+        printf("Confira o codigo na opcao 2 (Listar) e tente de novo.\n"); /* Conforme a tabela */
     } else {
         mostrar(pos);
     }
@@ -119,36 +167,32 @@ void pesquisar() {
 void atualizar() {
     int codigo, pos, nova;
 
-    printf("Codigo: ");
-    scanf("%d", &codigo);
+    codigo = lerNumero("Codigo: ");
     pos = buscar(codigo);
 
     if (pos == -1) {
-        printf("Acao nao encontrada!\n");
+        printf("Confira o codigo na opcao 2 (Listar) e tente de novo.\n"); /* Conforme a tabela */
         return;
     }
 
     printf("1 - Planejada\n");
     printf("2 - Realizada\n");
     printf("3 - Cancelada\n");
-    printf("Nova situacao: ");
-    scanf("%d", &nova);
 
-    if (nova < 1 || nova > 3) {
-        printf("Opcao invalida!\n");
-        return;
+    nova = lerNumero("Nova situacao: ");
+    while (nova < 1 || nova > 3) {
+        printf("Escolha um numero que aparece no menu.\n"); /* Conforme a tabela */
+        nova = lerNumero("Nova situacao: ");
     }
 
     acoes[pos].situacao = nova;
     acoes[pos].qtdEfetiva = 0;
 
     if (nova == 2) {
-        printf("Quantidade efetiva: ");
-        scanf("%d", &acoes[pos].qtdEfetiva);
+        acoes[pos].qtdEfetiva = lerNumero("Quantidade efetiva: ");
         while (acoes[pos].qtdEfetiva < 0) {
-            printf("Erro: nao pode ser negativa!\n");
-            printf("Quantidade efetiva: ");
-            scanf("%d", &acoes[pos].qtdEfetiva);
+            printf("Digite um numero igual ou maior que zero.\n"); /* Conforme a tabela */
+            acoes[pos].qtdEfetiva = lerNumero("Quantidade efetiva: ");
         }
     }
 
@@ -195,8 +239,7 @@ int main() {
         printf("4 - Atualizar Situacao\n");
         printf("5 - Resumo Geral\n");
         printf("0 - Sair\n");
-        printf("Opcao: ");
-        scanf("%d", &opcao);
+        opcao = lerNumero("Opcao: ");
 
         if (opcao == 1) {
             cadastrar();
@@ -211,7 +254,7 @@ int main() {
         } else if (opcao == 0) {
             printf("Saindo...\n");
         } else {
-            printf("Opcao invalida!\n");
+            printf("Escolha um numero que aparece no menu.\n"); /* Conforme a tabela */
         }
     }
 
