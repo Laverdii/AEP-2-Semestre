@@ -346,7 +346,7 @@ int main() {
         printf("2 - Listar Acoes\n");
         printf("3 - Pesquisar Acoes\n");
         printf("4 - Atualizar Situacao\n");
-        printf("5 - Gerar Resumo\n");
+        printf("5 - Resumo Geral\n");
         printf("0 - Sair\n");
         opcao = lerInteiro("Opcao: ");
 
