@@ -264,7 +264,7 @@ AEP-2-Semestre/
 | Documento da 1ª entrega (contextualização, requisitos, fluxogramas, pseudocódigos, sprints) | [`Documentação/1ª entrega`](Documentação/1ª%20entrega) |
 | Documento final (casos de uso, testes, manual do usuário, considerações finais) | [`Documentação/2ª entrega`](Documentação/2ª%20entrega) |
 | Fluxogramas e diagrama de casos de uso | [`Documentação/diagramas`](Documentação/diagramas) |
-| Vídeo de apresentação (até 7 minutos) |  |
+| Vídeo de apresentação (até 7 minutos) | [`Link do vídeo no YouTube`](https://www.youtube.com/watch?v=5s53UTEGX7Q) |
 
 ---
 
